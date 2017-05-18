@@ -1,0 +1,31 @@
+{
+    "build.dev": [
+        "clean.once",
+        "build.js.dev",
+        "build.index.dev"
+    ],
+    "build.dev.watch": [
+        "build.dev",
+        "watch.dev"
+    ],
+    "build.prod": [
+        "clean.prod",
+        "copy.prod",
+        "build.js.prod",
+        "build.bundles",
+        "minify",
+        "package.prod"
+    ],
+    "serve.dev": [
+        "build.dev",
+        "server.start",
+        "watch.dev"
+    ],
+    "serve.prod": [
+        "build.prod",
+        "server.prod"
+    ],
+    "docs": [
+        "build.docs"
+    ]
+}

@@ -1,50 +1,29 @@
-// @flow
-
-import gulp from 'gulp';
-import shell from 'gulp-shell';
-import rimraf from 'rimraf';
-import run from 'run-sequence';
-import watch from 'gulp-watch';
-import server from 'gulp-live-server';
-
-const paths = {
-    js: ['./src/**/*.js'],
-    destination: './app'
+{
+  "name": "init",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "gulp"
+  },
+  "author": "Jeffry Lenis",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.3",
+    "parse-dashboard": "^1.0.25",
+    "parse-server": "^2.4.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-preset-es2015-node6": "^0.4.0",
+    "babel-preset-stage-0": "^6.24.1",
+    "flow-bin": "^0.46.0",
+    "gulp": "^3.9.1",
+    "gulp-live-server": "0.0.30",
+    "gulp-shell": "^0.6.3",
+    "gulp-watch": "^4.3.11",
+    "rimraf": "^2.6.1",
+    "run-sequence": "^1.2.2"
+  }
 }
-
-gulp.task('default', cb => {
-    run('server', 'build', 'watch', cb);
-});
-
-gulp.task('build', cb => {
-    run('clean', 'flow', 'babel', 'restart', cb);
-});
-
-gulp.task('clean', cb => {
-    rimraf(paths.destination, cb);
-});
-
-gulp.task('flow', shell.task([
-    'flow'
-], { ignoreErrors: true }));
-
-gulp.task('babel', shell.task([
-    'babel src --out-dir app'
-]));
-
-let express;
-
-gulp.task('server', () => {
-    console.log('starting live reload server');
-    express = server.new(paths.destination);
-});
-
-gulp.task('restart', () => {
-    express.start.bind(express)();
-});
-
-gulp.task('watch', () => {
-    return watch(paths.js, () => {
-        gulp.start('build');
-    });
-});

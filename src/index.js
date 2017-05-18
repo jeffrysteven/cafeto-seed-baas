@@ -2,6 +2,7 @@
 
 import express from 'express';
 import { ParseServer } from 'parse-server';
+import ParseDashboard from 'parse-dashboard';
 
 const app = express();
 
@@ -14,6 +15,18 @@ const api = new ParseServer({
     serverURL: 'http://localhost:1337/api'
 });
 
+const dashboard = new ParseDashboard({
+    "apps": [
+        {
+            appId: 'cafetobaas',
+            masterKey: 'Cafeto2010',
+            serverURL: 'http://localhost:1337/api',
+            appName: 'HeadsUp'
+        }
+    ]
+}, );
+
 app.use('/api', api);
+app.use('/dashboard', dashboard);
 
 app.listen(1337, () => console.log('Cafeto parse server running on port 1337.'));

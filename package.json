@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "gulp"
+    "start": "npm run serve.dev",
+    "serve.dev": "gulp serve.dev --color --env-config dev",
+    "serve.prod": "gulp serve.prod --color --env-config prod",
+    "version": "gulp print.version --silent"
   },
   "author": "Jeffry Lenis",
   "license": "ISC",
@@ -20,6 +23,8 @@
     "babel-preset-stage-0": "^6.24.1",
     "flow-bin": "^0.46.0",
     "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-eslint": "^3.0.1",
     "gulp-live-server": "0.0.30",
     "gulp-shell": "^0.6.3",
     "gulp-watch": "^4.3.11",

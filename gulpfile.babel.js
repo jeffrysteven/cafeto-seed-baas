@@ -1,19 +1,31 @@
 // @flow
 
+import Config from './tools/config'
 import gulp from 'gulp';
 import shell from 'gulp-shell';
 import rimraf from 'rimraf';
 import run from 'run-sequence';
 import watch from 'gulp-watch';
 import server from 'gulp-live-server';
+import babel from 'gulp-babel';
+import eslint from 'gulp-eslint';
 
 const paths = {
-    js: ['./src/**/*.js'],
-    destination: './app'
+    src: [Config.PROJECT_ROOT+'/src/**'],
+    js: [Config.PROJECT_ROOT + '/src/**/*.js'],
+    destination: Config.PROJECT_ROOT + '/dist'
 }
 
 gulp.task('default', cb => {
+    run('lint', cb);
+});
+
+gulp.task('serve.dev', cb => {
     run('server', 'build', 'watch', cb);
+});
+
+gulp.task('serve.prod', cb => {
+    run('server', 'build', cb);
 });
 
 gulp.task('build', cb => {
@@ -28,14 +40,19 @@ gulp.task('flow', shell.task([
     'flow'
 ], { ignoreErrors: true }));
 
-gulp.task('babel', shell.task([
-    'babel src --out-dir app'
-]));
+gulp.task('babel', () => gulp.src(paths.js).pipe(babel()).pipe(gulp.dest('dist')));
+
+gulp.task('lint', () => gulp.src(paths.src).pipe(eslint(
+    {
+        'rules':{
+            'quotes': [1, 'single']
+        }
+    }
+)).pipe(eslint.format()).pipe(eslint.failOnError()));
 
 let express;
 
 gulp.task('server', () => {
-    console.log('starting live reload server');
     express = server.new(paths.destination);
 });
 

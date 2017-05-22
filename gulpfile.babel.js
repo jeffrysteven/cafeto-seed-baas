@@ -8,31 +8,30 @@ import run from 'run-sequence';
 import watch from 'gulp-watch';
 import server from 'gulp-live-server';
 import babel from 'gulp-babel';
-import eslint from 'gulp-eslint';
 
 const paths = {
-    src: [Config.PROJECT_ROOT+'/src/**'],
+    src: [Config.PROJECT_ROOT + '/src/**'],
     js: [Config.PROJECT_ROOT + '/src/**/*.js'],
     destination: Config.PROJECT_ROOT + '/dist'
 }
 
-gulp.task('default', cb => {
+gulp.task('default', (cb: any) => {
     run('lint', cb);
 });
 
-gulp.task('serve.dev', cb => {
+gulp.task('serve.dev', (cb: any) => {
     run('server', 'build', 'watch', cb);
 });
 
-gulp.task('serve.prod', cb => {
+gulp.task('serve.prod', (cb: any) => {
     run('server', 'build', cb);
 });
 
-gulp.task('build', cb => {
+gulp.task('build', (cb: any) => {
     run('clean', 'flow', 'babel', 'restart', cb);
 });
 
-gulp.task('clean', cb => {
+gulp.task('clean', (cb: any) => {
     rimraf(paths.destination, cb);
 });
 
@@ -42,23 +41,11 @@ gulp.task('flow', shell.task([
 
 gulp.task('babel', () => gulp.src(paths.js).pipe(babel()).pipe(gulp.dest('dist')));
 
-gulp.task('lint', () => gulp.src(paths.src).pipe(eslint(
-    {
-        'rules':{
-            'quotes': [1, 'single']
-        }
-    }
-)).pipe(eslint.format()).pipe(eslint.failOnError()));
+let express: any;
 
-let express;
+gulp.task('server', () => express = server.new(paths.destination));
 
-gulp.task('server', () => {
-    express = server.new(paths.destination);
-});
-
-gulp.task('restart', () => {
-    express.start.bind(express)();
-});
+gulp.task('restart', () => express.start.bind(express)());
 
 gulp.task('watch', () => {
     return watch(paths.js, () => {

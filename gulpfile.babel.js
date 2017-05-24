@@ -9,28 +9,28 @@ import watch from 'gulp-watch';
 import server from 'gulp-live-server';
 import babel from 'gulp-babel';
 
-let express: any;
-
-const paths = {
+const paths: { src: string[], js: string[], destination: string } = {
     src: [Config.PROJECT_ROOT + '/src/**'],
     js: [Config.PROJECT_ROOT + '/src/**/*.js'],
     destination: Config.PROJECT_ROOT + '/dist'
-}
+};
 
-gulp.task('serve.dev', (cb: any) => run('server', 'build', 'watch', cb));
+let express: server;
 
-gulp.task('serve.prod', (cb: any) => run('server', 'build', cb));
+gulp.task('serve.dev', (cb: mixed): void => run('server', 'build', 'watch', cb));
 
-gulp.task('build', (cb: any) => run('clean', 'flow', 'babel', 'restart', cb));
+gulp.task('serve.prod', (cb: mixed): void => run('server', 'build', cb));
 
-gulp.task('clean', (cb: any) => rimraf(paths.destination, cb));
+gulp.task('build', (cb: mixed): void => run('clean', 'flow', 'babel', 'restart', cb));
 
-gulp.task('flow', () => shell.task(['flow'], { ignoreErrors: true }));
+gulp.task('clean', (cb: mixed): void => rimraf(paths.destination, cb));
 
-gulp.task('babel', () => gulp.src(paths.js).pipe(babel()).pipe(gulp.dest('dist')));
+gulp.task('flow', shell.task(['flow'], { ignoreErrors: true }));
 
-gulp.task('server', () => { express = server.new(paths.destination) });
+gulp.task('babel', (): void => gulp.src(paths.js).pipe(babel()).pipe(gulp.dest('dist')));
 
-gulp.task('restart', () => { express.start.bind(express)() });
+gulp.task('server', (): void => { express = server.new(paths.destination) });
 
-gulp.task('watch', () => watch(paths.js, () => { gulp.start('build') }));
+gulp.task('restart', (): void => { express.start.bind(express)() });
+
+gulp.task('watch', (): watch => watch(paths.js, (): void => gulp.start('build')));

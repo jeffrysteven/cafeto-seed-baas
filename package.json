@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run serve.dev",
+    "start": "npm run serve.dev --silent",
     "serve.dev": "gulp serve.dev --color --env-config dev",
     "serve.prod": "gulp serve.prod --color --env-config prod",
     "version": "gulp print.version --silent"
@@ -13,6 +13,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.15.3",
+    "express-graphql": "^0.6.5",
+    "graphql": "^0.9.6",
     "parse-dashboard": "^1.0.25",
     "parse-server": "^2.4.0"
   },

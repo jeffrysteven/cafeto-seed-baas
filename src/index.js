@@ -1,19 +1,20 @@
 // @flow
 
 import express from 'express';
-import { ParseServer } from 'parse-server';
 import ParseDashboard from 'parse-dashboard';
+import { ParseServer } from 'parse-server';
 import path from 'path';
+import graphQLHTTP from 'express-graphql';
 
-const SERVER_PORT = process.env.PORT || 8080;
-const SERVER_HOST = process.env.HOST || 'localhost';
-const APP_ID = process.env.APP_ID || 'cafeto-baas-app';
-const MASTER_KEY = process.env.MASTER_KEY || 'Cafeto2010';
-const DATABASE_URI = process.env.DATABASE_URI || 'mongodb://localhost:27017/dev';
-const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production';
-const DASHBOARD_AUTH = process.env.DASHBOARD_AUTH;
+const SERVER_PORT: string = process.env.PORT || '8080';
+const SERVER_HOST: string = process.env.HOST || 'localhost';
+const APP_ID: string = process.env.APP_ID || 'cafeto-baas-app';
+const MASTER_KEY: string = process.env.MASTER_KEY || 'Cafeto2010';
+const DATABASE_URI: string = process.env.DATABASE_URI || 'mongodb://localhost:27017/dev';
+const IS_DEVELOPMENT: boolean = process.env.NODE_ENV !== 'production';
+const DASHBOARD_AUTH: string = process.env.DASHBOARD_AUTH || '';
 
-const app: any = express();
+const app: express = express();
 
 const api: ParseServer = new ParseServer({
     databaseURI: DATABASE_URI,
@@ -31,19 +32,17 @@ const api: ParseServer = new ParseServer({
 });
 
 const dashboard: ParseDashboard = new ParseDashboard({
-    "apps": [
+    apps: [
         {
             appId: APP_ID,
             masterKey: MASTER_KEY,
             serverURL: `http://${SERVER_HOST}:${SERVER_PORT}/api`,
-            appName: 'HeadsUp'
+            appName: 'XXXX'
         }
     ]
-}, );
+});
 
 app.use('/api', api);
 app.use('/dashboard', dashboard);
 
-app.listen(SERVER_PORT, () => console.log(
-    `Server is now running in ${process.env.NODE_ENV || 'development'} mode on http://${SERVER_HOST}:${SERVER_PORT}`)
-);
+app.listen(SERVER_PORT, console.log(`Server is now running in ${process.env.NODE_ENV || 'development'} mode on http://${SERVER_HOST}:${SERVER_PORT}`));

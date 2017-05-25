@@ -12,9 +12,12 @@
   "author": "Jeffry Lenis",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "express-graphql": "^0.6.5",
     "graphql": "^0.9.6",
+    "graphql-server-express": "^0.7.2",
+    "parse": "^1.9.2",
     "parse-dashboard": "^1.0.25",
     "parse-server": "^2.4.0"
   },

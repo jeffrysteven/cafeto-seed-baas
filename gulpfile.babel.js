@@ -1,4 +1,4 @@
-// @flow
+/* @flow */
 
 import Config from './tools/config'
 import gulp from 'gulp';

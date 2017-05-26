@@ -7,10 +7,65 @@ import {
     GraphQLString,
     GraphQLInt,
     GraphQLList,
-    GraphQLNonNull
+    GraphQLNonNull,
+    GraphQLBoolean
 } from 'graphql';
 
 const Message = Parse.Object.extend('messages');
+const User = Parse.User;
+const Post = Parse.Object.extend('Post');
+
+let usersType: GraphQLObjectType = new GraphQLObjectType({
+    name: 'users',
+    description: 'Users from parse',
+    fields: () => ({
+        id: {
+            type: GraphQLID,
+            description: 'User id'
+        },
+        emailVerified: {
+            type: GraphQLBoolean,
+            description: 'User is verified',
+            resolve: user => user.get('emailVerified')
+        },
+        username: {
+            type: GraphQLString,
+            description: 'User username',
+            resolve: user => user.get('username')
+        },
+        email: {
+            type: GraphQLString,
+            description: 'User email',
+            resolve: user => user.get('email')
+        }
+    })
+});
+
+let postsType: GraphQLObjectType = new GraphQLObjectType({
+    name: 'posts',
+    description: 'Posts from parse',
+    fields: () => ({
+        id: {
+            type: GraphQLID,
+            description: 'Post Id'
+        },
+        title: {
+            type: GraphQLString,
+            description: 'Post title',
+            resolve: post => post.get('title')
+        },
+        content: {
+            type: GraphQLString,
+            description: 'Post content',
+            resolve: post => post.get('content')
+        },
+        author: {
+            type: usersType,
+            description: 'Post author',
+            resolve: post => post.get('author')
+        }
+    })
+});
 
 let messagesType: GraphQLObjectType = new GraphQLObjectType({
     name: 'messages',
@@ -38,6 +93,14 @@ let QueryType: GraphQLObjectType = new GraphQLObjectType({
         messages: {
             type: new GraphQLList(messagesType),
             resolve: () => new Parse.Query(Message).find()
+        },
+        users: {
+            type: new GraphQLList(usersType),
+            resolve: () => new Parse.Query(User).find()
+        },
+        posts: {
+            type: new GraphQLList(postsType),
+            resolve: () => new Parse.Query(Post).find()
         }
     })
 });

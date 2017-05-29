@@ -92,15 +92,39 @@ let QueryType: GraphQLObjectType = new GraphQLObjectType({
     fields: () => ({
         messages: {
             type: new GraphQLList(messagesType),
-            resolve: () => new Parse.Query(Message).find()
+            resolve: () => new Parse.Query(Message).find(),
+            description: 'Get messages'
         },
         users: {
             type: new GraphQLList(usersType),
-            resolve: () => new Parse.Query(User).find()
+            resolve: () => new Parse.Query(User).find(),
+            description: 'Get users'
         },
         posts: {
             type: new GraphQLList(postsType),
-            resolve: () => new Parse.Query(Post).find()
+            description: 'Get posts',
+            resolve: (source, args, context, info) => {
+                let postQuery = new Parse.Query(Post);
+                /* Esto podría ir en una función BEGIN */
+                if (Object.keys(args).length) {
+                    for (var key in args) {
+                        var element = args[key];
+                        if (key === 'id') {
+                            key = 'objectId';
+                        }
+                        postQuery.equalTo(key, element);
+                    }
+                }
+                /* Esto podría ir en una función END */
+                postQuery.include("author");
+                return postQuery.find({ useMasterKey: true });
+            },
+            args: ({
+                id: {
+                    type: GraphQLString,
+                    description: 'Post id'
+                }
+            })
         }
     })
 });
@@ -121,6 +145,21 @@ let MutationType: GraphQLObjectType = new GraphQLObjectType({
             },
             resolve: (_, message) => {
                 return new Message(message).save().then(nm => nm);
+            }
+        },
+        addPost: {
+            type: postsType,
+            description: 'Create a new post',
+            args: {
+                title: {
+                    type: new GraphQLNonNull(GraphQLString),
+                },
+                content: {
+                    type: new GraphQLNonNull(GraphQLString)
+                },
+                /*author: {
+                    type: new GraphQLNonNull(usersType)
+                }*/
             }
         }
     }
